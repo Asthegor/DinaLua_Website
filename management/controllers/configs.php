@@ -5,31 +5,31 @@ class Configs extends Controller
     protected function index()
     {
         $this->checkLogin();
-        $viewmodel = new ConfigsModel();
-        $this->returnView($viewmodel->Index());
+        $viewModelConfigs = new ConfigsModel();
+        $this->returnView(array("viewModelConfigs"=>$viewModelConfigs));
     }
 
     protected function add()
     {
         $this->checkLogin();
-        $viewmodel = new ConfigsModel();
-        $this->returnView($viewmodel->Add());
+        $viewModelConfigs = new ConfigsModel();
+        $this->returnView($viewModelConfigs->Add());
     }
 
     protected function update()
     {
         $this->checkLogin();
         $this->checkId();
-        $viewmodel = new ConfigsModel();
-        $this->returnView($viewmodel->Update());
+        $viewModelConfigs = new ConfigsModel();
+        $this->returnView($viewModelConfigs->Update());
     }
 
     protected function delete()
     {
         $this->checkLogin();
         $this->checkId();
-        $viewmodel = new ConfigsModel();
-        $this->returnView($viewmodel->Delete());
+        $viewModelConfigs = new ConfigsModel();
+        $this->returnView($viewModelConfigs->Delete());
     }
 }
 

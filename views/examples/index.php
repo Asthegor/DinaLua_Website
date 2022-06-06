@@ -13,8 +13,10 @@ foreach ($viewModel as $item)
             <hr>
             <?php
         }
+        $cat = urldecode($item['category']);
+        $tag = str_replace(' ', '', $cat);
         ?>
-        <h3><?= urldecode($item['category']); ?></h3>
+        <h2 id ="<?= $tag; ?>"><?= $cat; ?></h2>
         <?= urldecode($item['categ_desc']); ?>
         <hr style="text-align:left; width:50%; border-style: dashed; margin-left:0px;">
         <?php
@@ -26,10 +28,9 @@ foreach ($viewModel as $item)
             $index += 1;
     }
     ?>
-    <h4><?= urldecode($item['title']); ?>
-    </h4>
+    <h3><?= urldecode($item['title']); ?></h3>
     <p><?= urldecode($item['description']); ?></p>
-    <a href="<?= ROOT_URL.'download.php?example='.$item['file']; ?>">Télécharger <?= $item['file']; ?></a>
+    <a href="<?= ROOT_URL.'download.php?example='.$item['file']; ?>"><span style="color: white;">Télécharger</span> <?= $item['file']; ?></a>
     <p>&nbsp;</p>
     <?php
 }

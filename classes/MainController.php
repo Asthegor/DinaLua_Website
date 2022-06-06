@@ -17,9 +17,18 @@ class MainController
             $this->controller = $this->request['controller'];
 
         if (!isset($this->request['action']) || $this->request['action'] == "")
-            $this->action = 'Index';
+            $this->action = 'index';
         else
             $this->action = $this->request['action'];
+        /*
+        $req = "";
+        foreach ($this->request as $key => $value)
+        {
+            $req = $key . "= ". $value. ", " ;
+        }
+        $uri = $_SERVER['REQUEST_URI'];
+        error_log("Request_URI= $uri, Request= $req, Controller= $this->controller, Action= $this->action");
+        */
     }
     public function createController()
     {

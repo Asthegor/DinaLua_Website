@@ -5,8 +5,11 @@ class NavBar extends Controller
     protected function index()
     {
         $this->checkLogin();
-        $viewmodel = new NavBarModel();
-        $this->returnView($viewmodel->Index());
+        $viewModelNavBar = new NavBarModel();
+        $NavBar = $viewModelNavBar->Index();
+        $viewModelConfigs = new ConfigsModel();
+        $Configs = $viewModelConfigs->Index();
+        $this->returnView(array("viewModelNavBar"=>$NavBar,"viewModelConfigs"=>$Configs));
     }
 
     protected function add()

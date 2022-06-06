@@ -2,5 +2,9 @@
 config.php
 management/config.php
 assets/
-
 files/
+*.ini
+documentation/
+management/error_log
+
+scripts/

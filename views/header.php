@@ -1,7 +1,3 @@
-<?php
-if ($_SERVER["REQUEST_URI"] == __FILE__)
-  header('Location: '.ROOT_URL);
-?>
 <!DOCTYPE html>
 
 <html lang="fr">
@@ -45,5 +41,5 @@ if ($_SERVER["REQUEST_URI"] == __FILE__)
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <header style="width:100%">
-    <img src="<?= ROOT_URL; ?>assets/images/DinaGE.png" alt="Dina Game Engine"/>
+    <img src="<?= ROOT_URL; ?>assets/images/Dina.png" alt="Dina Game Engine"/>
   </header>

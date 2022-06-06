@@ -15,6 +15,11 @@ class DownloadsModel extends Model
         foreach ($arrZipFiles as $Zipfile)
         {
             $ZipFileName = basename($Zipfile);
+            if(!file_exists(ROOT_DIR. $this->targetDir.$ZipFileName.'_counter.txt'))
+            {
+                $fp = fopen(ROOT_DIR. $this->targetDir.$ZipFileName.'_counter.txt', "w+");
+                fclose($fp);
+            }
             $countFile = fopen(ROOT_DIR. $this->targetDir . $ZipFileName."_counter.txt", "r");
             $nbdownloads = fgets($countFile);
             fclose($countFile);
@@ -30,7 +35,7 @@ class DownloadsModel extends Model
     public function Add()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             $file = basename($_FILES["file"]["name"]);
             $target_file = ROOT_DIR . $this->targetDir . $file;

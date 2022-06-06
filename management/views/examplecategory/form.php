@@ -29,7 +29,7 @@
     </div>
     <div class="form-group">
         <label>Ordre de tri</label>
-        <input type="text" name="sortOrder" value="<?= $viewModel['sortOrder']; ?>" required />
+        <input type="text" name="sortOrder" value="<?= isset($viewModel['sortOrder']) ? $viewModel['sortOrder'] : ''; ?>" required />
     </div>
     <input class="btn btn-primary" name="submit" type="submit" value="Submit" />
     <a class="btn btn-warning" href="<?= ROOT_MNGT; ?>examples">Cancel</a>

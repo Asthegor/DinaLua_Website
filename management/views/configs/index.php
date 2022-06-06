@@ -8,7 +8,7 @@
         </tr>
     </table>
     <?php
-    foreach ($viewModel as $item)
+    foreach ($viewModelConfigs as $item)
     {
     ?>
         <a href="<?= ROOT_MNGT.'configs/update/'.$item['id']; ?>">

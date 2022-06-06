@@ -2,10 +2,11 @@
 
 class NewsModel extends Model
 {
+    private $returnPage = "news";
     public function Index()
     {
         $this->query("SELECT id, date_news, title, content, ".
-                     "new_version, new_example, new_tutorial, visible ".
+                     "new_version, new_example, new_tutorial, new_tool, visible ".
                      "FROM news ".
                      "ORDER BY id DESC");
         $rows = $this->resultSet();
@@ -16,7 +17,7 @@ class NewsModel extends Model
     public function Add()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['title'] == '' || $post['content'] == '' || $post['date_news'] == '')
             {
@@ -28,13 +29,15 @@ class NewsModel extends Model
                 date_default_timezone_set('Europe/Paris');
                 $this->startTransaction();
                 // Insertion du nom français
-                $this->query("INSERT INTO news (date_news, title, content, new_version, new_example, visible)
-                            VALUES (:date_news, :title, :content, :new_version, :new_example, :visible)");
+                $this->query("INSERT INTO news (date_news, title, content, new_version, new_example, new_tutorial, new_tool, visible)
+                            VALUES (:date_news, :title, :content, :new_version, :new_example, :new_tutorial, :new_tool, :visible)");
                 $this->bind(':date_news', $post['date_news']);
                 $this->bind(':title', $post['title']);
                 $this->bind(':content', $post['content']);
                 $this->bind(':new_version', isset($post['new_version']) ? $post['new_version'] : 0, PDO::PARAM_INT);
                 $this->bind(':new_example', isset($post['new_example']) ? $post['new_example'] : 0, PDO::PARAM_INT);
+                $this->bind(':new_tutorial', isset($post['new_tutorial']) ? $post['new_tutorial'] : 0, PDO::PARAM_INT);
+                $this->bind(':new_tool', isset($post['new_tool']) ? $post['new_tool'] : 0, PDO::PARAM_INT);
                 $this->bind(':visible', isset($post['visible']) ? $post['visible'] : 0, PDO::PARAM_INT);
                 $resp = $this->execute();
                 //Verify
@@ -43,6 +46,7 @@ class NewsModel extends Model
                     $this->commit();
                     $this->close();
                     $this->returnToPage($this->returnPage);
+                    return;
                 }
                 $this->rollback();
                 $this->close();
@@ -55,7 +59,7 @@ class NewsModel extends Model
     public function Update()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['title'] == '' || $post['content'] == '' || $post['date_news'] == '')
             {
@@ -67,15 +71,18 @@ class NewsModel extends Model
                 date_default_timezone_set('Europe/Paris');
                 $this->startTransaction();
                 //Insertion des données générales
-                $this->query("UPDATE news
-                              SET date_news = :date_news, title = :title, content = :content, 
-                                  new_version = :new_version, new_example = :new_example, visible = :visible 
-                            WHERE id = :id");
+                $this->query("UPDATE news ".
+                             "SET date_news = :date_news, title = :title, content = :content, ".
+                                 "new_version = :new_version, new_example = :new_example, ".
+                                 "new_tutorial = :new_tutorial, new_tool = :new_tool, visible = :visible ".
+                             "WHERE id = :id");
                 $this->bind(':date_news', $post['date_news']);
                 $this->bind(':title', $post['title']);
                 $this->bind(':content', $post['content']);
                 $this->bind(':new_version', isset($post['new_version']) ? $post['new_version'] : 0);
                 $this->bind(':new_example', isset($post['new_example']) ? $post['new_example'] : 0);
+                $this->bind(':new_tutorial', isset($post['new_tutorial']) ? $post['new_tutorial'] : 0);
+                $this->bind(':new_tool', isset($post['new_tool']) ? $post['new_tool'] : 0, PDO::PARAM_INT);
                 $this->bind(':visible', isset($post['visible']) ? $post['visible'] : 0);
                 $this->bind(':id', $post['id']);
                 $resp = $this->execute();
@@ -92,12 +99,14 @@ class NewsModel extends Model
                     $this->close();
                     Messages::setMsg('Error(s) during update : [resp='.$resp.']', 'error');
                 }
+                return;
             }
         }
         $get = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
-        $this->query("SELECT id, title, content, date_news, new_version, new_example, visible
-                      FROM news WHERE id = :id
-                      ORDER BY id DESC");
+        $this->query("SELECT id, title, content, date_news, new_version, ".
+                            "new_example, new_tutorial, new_tool, visible ".
+                     "FROM news WHERE id = :id ".
+                     "ORDER BY id DESC");
         $this->bind(':id', $get['id']);
         $rows = $this->single();
         $this->close();
@@ -123,6 +132,7 @@ class NewsModel extends Model
             }
             $this->close();
             $this->returnToPage($this->returnPage);
+            return;
         }
         $get = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
         $this->query("SELECT id, title, date_news

@@ -20,7 +20,7 @@
     </div>
     <div class="form-group">
         <label>Catégorie</label>
-        <select name="id_Category">
+        <select name="id_Category" required>
             <option value=""></option>
             <?php
             $fm = new TutorialCategoryModel();
@@ -28,7 +28,7 @@
             foreach ($fmlist as $item)
             {
                 ?>
-                <option value="<?= $item['id']; ?>" <?= $viewModel['id_Category'] == $item['id'] ? 'selected' : ''; ?>><?= urldecode($item['name']); ?></option>
+                <option value="<?= $item['id']; ?>" <?= isset($viewModel['id_Category']) ? ($viewModel['id_Category'] == $item['id'] ? 'selected' : '') : ''; ?>><?= urldecode($item['name']); ?></option>
                 <?php
             }
             ?>
@@ -53,11 +53,11 @@
             <option value=""></option>
             <?php
             $fm = new TutorialsModel();
-            $fmlist = $fm->getList($viewModel['id'], $viewModel['id_Category']);
+            $fmlist = $fm->getList(isset($viewModel['id']) ? $viewModel['id'] : 0, isset($viewModel['id_Category']) ? $viewModel['id_Category'] : 0);
             foreach ($fmlist as $item)
             {
                 ?>
-                <option value="<?= $item['id']; ?>" <?= $viewModel['id_Previous'] == $item['id'] ? 'selected' : ''; ?>><?= urldecode($item['title']); ?></option>
+                <option value="<?= $item['id']; ?>" <?= isset($viewModel['id_Previous']) ? ($viewModel['id_Previous'] == $item['id'] ? 'selected' : '') : ''; ?>><?= urldecode($item['title']); ?></option>
                 <?php
             }
             ?>
@@ -69,11 +69,11 @@
             <option value=""></option>
             <?php
             $fm = new TutorialsModel();
-            $fmlist = $fm->getList($viewModel['id'], $viewModel['id_Category']);
+            $fmlist = $fm->getList(isset($viewModel['id']) ? $viewModel['id'] : 0, isset($viewModel['id_Category']) ? $viewModel['id_Category'] : 0);
             foreach ($fmlist as $item)
             {
                 ?>
-                <option value="<?= $item['id']; ?>" <?= $viewModel['id_Next'] == $item['id'] ? 'selected' : ''; ?>><?= urldecode($item['title']); ?></option>
+                <option value="<?= $item['id']; ?>" <?= isset($viewModel['id_Next']) ? ($viewModel['id_Next'] == $item['id'] ? 'selected' : '') : ''; ?>><?= urldecode($item['title']); ?></option>
                 <?php
             }
             ?>

@@ -13,7 +13,7 @@
         </tr>
     </table>
     <?php
-    foreach ($viewModel as $item)
+    foreach ($viewModelNavBar as $item)
     {
     ?>
         <a href="<?= ROOT_MNGT.'navbar/update/'.$item['id']; ?>">
@@ -33,3 +33,9 @@
     }
     ?>
 </div>
+<br>
+<hr>
+<br>
+<?php
+include(__DIR__."/../configs/index.php");
+?>

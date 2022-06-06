@@ -5,7 +5,7 @@ if (!is_array($viewModelLastVersion))
     <br>
     <h2>Liste des versions disponibles en téléchargement</h2>
     <br>
-    Merci de noter le site dans vos crédits si vous utilisez DinaGE dans votre projet.<br>
+    Merci d'indiquer le site dans vos crédits si vous utilisez le framework Dina dans votre projet.<br>
     <br>
     <h3>Dernière version : <a href="<?= ROOT_URL; ?>download.php?file=<?= $viewModelLastVersion; ?>"><?= $viewModelLastVersion; ?></a></h3>
     <br>

@@ -12,6 +12,8 @@ abstract class Model
     }
     public function query($query)
     {
+        if ($this->dbh == null)
+            $this->dbh = Singleton::getInstance();
         $this->stmt = $this->dbh->prepare($query);
     }
 
@@ -59,14 +61,28 @@ abstract class Model
         return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function startTransaction()
+    {
+        Singleton::getInstance()->beginTransaction();
+    }
+    public function rollBack()
+    {
+        Singleton::getInstance()->rollBack();
+    }
+    public function commit()
+    {
+        Singleton::getInstance()->commit();
+    }
     public function close()
     {
         $this->stmt->closeCursor();
+        $this->stmt = null;
+        $this->dbh = null;
     }
 
-    protected function returnToPage($path)
+    public function returnToPage($path)
     {
-        header('Location: '.ROOT_MNGT.$path);
+        header('Location: '.ROOT_URL.$path);
     }
 
 }

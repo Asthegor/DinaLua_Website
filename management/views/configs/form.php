@@ -1,4 +1,4 @@
-<h1>Barre de navigation</h1>
+<h1>Configurations</h1>
 <form method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
     <?php if (isset($viewModel['id']))
     {
@@ -28,7 +28,7 @@
         </script>
     </div>
     <input class="btn btn-primary" name="submit" type="submit" value="Submit" />
-    <a class="btn btn-warning" href="<?= ROOT_MNGT; ?>configs">Cancel</a>
+    <a class="btn btn-warning" href="<?= ROOT_MNGT; ?>navbar">Cancel</a>
     <?php if (isset($viewModel['id']))
     {
         ?>

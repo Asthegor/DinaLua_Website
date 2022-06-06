@@ -9,20 +9,26 @@ foreach (array_reverse(glob("files/*.zip")) as $file)
 ?>
 <?php
 $fileName = basename($_SERVER['REQUEST_URI']);
+$hc = new Home("","");
+$isLoggedIn = $hc->IsLoggedIn();
 ?>
 <ul class="nav-bar">
     <?php
     $navbar = new NavBarModel();
     $items = $navbar->getVisibleItems();
-    $count = count($items);
     foreach ($items as $item)
     {
+        
+        if ($isLoggedIn && $item['guest'] == "1")
+            continue;
+        if (!$isLoggedIn && $item['member'] == "1")
+            continue;
         ?>
         <li class="nav-item" 
         <?= $item['bRight'] ? 'style="float:right"' : ''?>>
             <a <?=  (($fileName == "" && strtolower($item['destination']) == 'home') || 
                      $fileName == $item['destination'] ||
-                     $item['destination'] === "download.php?file=DinaGELastVersion")
+                     $item['destination'] === "download.php?file=DinaLastVersion")
                     ? ' class="active" '
                     : ''; ?>
                 href="<?= ($item['bPage'] == 1 ? ROOT_URL : '').$item['destination']; ?>"

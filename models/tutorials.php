@@ -2,14 +2,37 @@
 
 class TutorialsModel extends Model
 {
-    public function index()
+    public function TutorialsByCategory($Id_Categ)
     {
-        $this->query("SELECT t.id, t.title, t.short_desc, 
-                             tc.name category, tc.description categ_desc
-                      FROM tutorial AS t
-                      LEFt JOIN tutorialcategory AS tc ON t.id_Category = tc.id
-                      WHERE t.visible = 1
-                      ORDER BY tc.sortOrder, tc.name, t.id");
+        $query = "SELECT id, title, short_desc ".
+                 "FROM tutorial ".
+                 "WHERE visible = 1 ".
+                 "AND id_Category = :id_Category ".
+                 "ORDER BY id_Previous, id_Next, id";
+        $this->query($query);
+        $this->bind(":id_Category", $Id_Categ);
+        $rows = $this->resultSet();
+        $this->close();
+        return $rows;
+    }
+    
+    public function SubCategByCategId($Id)
+    {
+        $this->query("SELECT id, name, description ".
+                     "FROM tutorialcategory ".
+                     "WHERE id_Parent = :id");
+        $this->bind(":id", $Id);
+        $rows = $this->resultSet();
+        $this->close();
+        return $rows;
+    }
+
+    public function GetCategoriesWithoutParent()
+    {
+        $this->query("SELECT id, name, description ".
+                     "FROM tutorialcategory ".
+                     "WHERE id_Parent = 0 ".
+                     "ORDER BY sortOrder, id");
         $rows = $this->resultSet();
         $this->close();
         return $rows;

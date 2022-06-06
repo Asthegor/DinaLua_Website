@@ -2,7 +2,7 @@
 
 class ConfigsModel extends Model
 {
-    private $header = 'configs';
+    private $returnPage = 'navbar';
 
     public function Index()
     {
@@ -17,7 +17,7 @@ class ConfigsModel extends Model
     public function Add()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['data'] == '' || $post['content'] == '')
             {
@@ -28,7 +28,7 @@ class ConfigsModel extends Model
                 // Insert into MySQL
                 $this->startTransaction();
                 //Insertion des données générales
-                $this->query('INSERT INTO configs (data, content ' .
+                $this->query('INSERT INTO configs (data, content) ' .
                              'VALUES (:data, :content)');
                 $this->bind(':data', $post['data']);
                 $this->bind(':content', $post['content']);
@@ -39,7 +39,7 @@ class ConfigsModel extends Model
                 {
                     $this->commit();
                     $this->close();
-                    $this->returnToPage($this->header);
+                    $this->returnToPage($this->returnPage);
                 }
                 $this->rollback();
                 $this->close();
@@ -65,9 +65,9 @@ class ConfigsModel extends Model
                 $this->startTransaction();
                 //Insertion de l'image
                 // Mise à jour de la table 
-                $this->query('UPDATE configs '.
-                             'SET data=:data, content=:content '.
-                             'WHERE id=:id');
+                $this->query("UPDATE configs ".
+                             "SET data=:data, content=:content ".
+                             "WHERE id=:id");
                 $this->bind(':data', $post['data']);
                 $this->bind(':content', $post['content']);
                 $this->bind(':id', $post['id'], PDO::PARAM_INT);
@@ -77,7 +77,7 @@ class ConfigsModel extends Model
                 {
                     $this->commit();
                     $this->close();
-                    $this->returnToPage($this->header);
+                    $this->returnToPage($this->returnPage);
                 }
                 else
                 {

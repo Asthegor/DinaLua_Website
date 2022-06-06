@@ -7,7 +7,8 @@ class Home extends Controller
         $viewModel = new HomeModel();
         $viewModelNews = $viewModel->index();
         $viewModelAnnounce = $viewModel->GetAnnounce();
-        $this->returnView(array("viewModelAnnounce" => $viewModelAnnounce, "viewModelNews" => $viewModelNews));
+        $nbNews = $viewModel->NbNews();
+        $this->returnView(array("viewModelAnnounce" => $viewModelAnnounce, "viewModelNews" => $viewModelNews, "NbNews" => $nbNews));
     }
 }
 

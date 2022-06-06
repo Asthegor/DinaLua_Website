@@ -1,12 +1,13 @@
 <?php Messages::display(); ?>
 <?php
-$returnPage = 'tutorials';
-if (!($viewModel && isset($viewModel['name'])))
+$returnPage = 'examples';
+if (!($viewModel && isset($viewModel['title'])))
 {
     header('Location: '.ROOT_MNGT.$returnPage);
     return;
 }
-$title = 'Tutoriels';
+$title = 'Exemples';
 $recordTitle = urldecode($viewModel['title']);
+
 require('views/deleteform.php');
 ?>

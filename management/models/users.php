@@ -6,7 +6,7 @@ class UsersModel extends Model
     {
         // Sanitize POST
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             // Compare login
             $this->query('SELECT * FROM users WHERE login = :login AND password = :password');

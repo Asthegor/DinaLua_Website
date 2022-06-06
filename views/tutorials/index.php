@@ -1,38 +1,98 @@
 <h1>Tutoriels</h1>
 <br>
 <?php
-$index = 0;
-$curCateg = '';
-foreach ($viewModel as $item)
+$tm = new TutorialsModel();
+$indcateg = 1;
+foreach ($viewModel as $Categ)
 {
-    if ($curCateg != $item['category'])
+    $tmsub = $tm->SubCategByCategId($Categ['id']);
+
+    $tmtutos = $tm->TutorialsByCategory($Categ['id']);
+
+    if (count($tmsub) > 0 or count($tmtutos) > 0)
     {
-        if($curCateg != '')
+        if ($indcateg > 1 and $indcateg <= count($viewModel))
         {
             ?>
+            <p>&nbsp;</p>
             <hr>
             <?php
         }
+        $cat = urldecode($Categ['name']);
+        $tag = str_replace(' ', '', $cat);
         ?>
-        <h3><?= urldecode($item['category']); ?></h3>
-        <?= urldecode($item['categ_desc']); ?>
+        <h2 id="<?= $tag; ?>"><?= $cat; ?></h2>
+        <?= urldecode($Categ['description']); ?>
         <hr style="text-align:left; width:50%; border-style: dashed; margin-left:0px;">
         <?php
-        $index = 1;
-        $curCateg = $item['category'];
+        if (count($tmsub) > 0)
+        {
+            ?>
+            <div style="margin-left: 5%">
+            <?php
+        }
     }
-    else
+    
+    $indsub = 1;
+    foreach ($tmsub as $SubCateg)
     {
-            $index += 1;
+        $tmsubtutos = $tm->TutorialsByCategory($SubCateg['id']);
+        if (count($tmsubtutos) > 0)
+        {
+            if ($indsub > 1 and $indsub <= count($tmsub))
+            {
+                ?>
+                <hr style="text-align:left; width:50%; border-style: dashed; margin-left:0px;">
+                <p>&nbsp;</p>
+                <?php
+            }
+            $subcat = urldecode($SubCateg['name']);
+            $tagsub = $tag . '-' . str_replace(' ', '', $subcat);
+            ?>
+            <h3 id="<?= $tagsub; ?>"><?= $subcat; ?></h3>
+            <?= urldecode($SubCateg['description']); ?>
+            <hr style="text-align:left; width:25%; border-style: dashed; margin-left:0px;">
+            <?php
+        }
+        $indsubtuto = 1;
+        foreach($tmsubtutos as $SubTutorial)
+        {
+            ?>
+            <h4>
+                <a href="<?= ROOT_URL.'tutorial/'.$SubTutorial['id']; ?>"><?= $indsubtuto . "- " . urldecode($SubTutorial['title']); ?></a>
+            </h4>
+            <p><?= urldecode($SubTutorial['short_desc']); ?></p>
+            <?php
+            $indsubtuto++;
+        }
+      $indsub++;
     }
-    ?>
-    <h4>
-        <a href="<?= ROOT_URL.'tutorial/'.$item['id']; ?>">
-            <?= $index; ?> - <?= urldecode($item['title']); ?>
-        </a>
-    </h4>
-    <p><?= urldecode($item['short_desc']); ?></p>
-    <p>&nbsp;</p>
-    <?php
+
+    if (count($tmsub) > 0)
+    {
+        ?>
+        </div>
+        <?php
+    }
+    if (count($tmsub) > 0 and count($tmtutos) > 0)
+    {
+        ?>
+        <hr style="text-align:left; width:50%; margin-left:0px;">
+        <p>&nbsp;</p>
+        <?php
+    }
+    $indtuto = 1;
+    foreach ($tmtutos as $Tutorial)
+    {
+        ?>
+        <h4>
+            <a href="<?= ROOT_URL.'tutorial/'.$Tutorial['id']; ?>"><?= $indtuto . "- " . urldecode($Tutorial['title']); ?></a>
+        </h4>
+        <p><?= urldecode($Tutorial['short_desc']); ?></p>
+        <?php
+        $indtuto++;
+    }
+    
+    $indcateg++;
 }
 ?>

@@ -5,10 +5,10 @@ class AdminsModel extends Model
     {
         // Sanitize POST
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             // Compare login
-            $this->query('SELECT * FROM admins WHERE login = :login AND password = :password');
+            $this->query('SELECT id, login FROM admins WHERE login = :login AND password = :password');
             $this->bind(':login', $post['login']);
             $password = md5($post['password']);
             $this->bind(':password', $password);

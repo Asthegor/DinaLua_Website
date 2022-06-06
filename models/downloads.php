@@ -15,5 +15,12 @@ class DownloadsModel extends Model
         $last = array_shift($arrFiles);
         return basename($last);
     }
+    
+    public function GetLoveExeMakerVersion()
+    {
+        $arrFiles = array_reverse(glob("files/tools/LoveExeMaker*.zip"));
+        $last = array_shift($arrFiles);
+        return basename($last);
+    }
 }
 ?>

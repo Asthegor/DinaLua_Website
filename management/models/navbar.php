@@ -17,7 +17,7 @@ class NavBarModel extends Model
     public function Add()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['title'] == '' || $post['destination'] == '')
             {

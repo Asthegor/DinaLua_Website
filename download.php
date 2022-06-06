@@ -3,6 +3,28 @@ session_start();
 require( __DIR__ . '/autoload.php');
 require( __DIR__ . '/config.php');
 
+$downloadController = new Downloads("", "");
+
+if (!$downloadController->IsLoggedIn())
+{
+    exit(header('location:'.ROOT_URL.'users/login'));
+}
+
+class IpEr{
+  public function Get_Ip(){
+    if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else{
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+    return  $ip;
+  }
+}
+
 //has a file name been passed?
 if(!empty($_GET['file'])){
     //where the files are
@@ -10,7 +32,7 @@ if(!empty($_GET['file'])){
 
     //protect from people getting other files
     $file = $_GET['file'];
-    if ($file === 'DinaGELastVersion')
+    if ($file === 'DinaLastVersion')
     {
         $dlm = new DownLoadsModel();
         $file = $dlm->GetLastVersion();
@@ -28,7 +50,7 @@ if(!empty($_GET['file'])){
             $count = fread($fp, 1024);
             fclose($fp);
             $fp = fopen($downloads_folder.$filename.'_counter.txt', "w");
-            fwrite($fp, $count + 1);
+            fwrite($fp, intval($count) + 1);
             fclose($fp);
         }
         else
@@ -37,9 +59,14 @@ if(!empty($_GET['file'])){
             fwrite($fp, 1);
             fclose($fp);
         }
+        
+        $iper = new IpEr();
+        $ip_address = $iper->Get_Ip();
+
         // add ip address
         $fp = fopen($downloads_folder.$filename.'_ips.txt', "ab");
-        fwrite($fp, $_SERVER['REMOTE_ADDR'] . "\n");
+        
+        fwrite($fp, gethostbyaddr($ip_address) . " (" . $ip_address . ")\n");
         fclose($fp);
 
         header('Content-Description: File Transfer');
@@ -63,7 +90,7 @@ if(!empty($_GET['file'])){
     }
     else
     {
-        Messages::setMsg("Fichier ".$filename." non trouvé !", 'error');
+        Messages::setMsg("Fichier \"".$filename."\" non trouvé !", 'error');
         exit(header("Location: ./downloads"));
     }
 
@@ -87,7 +114,7 @@ elseif(!empty($_GET['example']))
             $count = fread($fp, 1024);
             fclose($fp);
             $fp = fopen($downloads_folder.$filename.'_counter.txt', "w");
-            fwrite($fp, $count + 1);
+            fwrite($fp, intval($count) + 1);
             fclose($fp);
         }
         else
@@ -122,7 +149,7 @@ elseif(!empty($_GET['example']))
     }
     else
     {
-        Messages::setMsg("Fichier non trouvé !", 'error');
+        Messages::setMsg("Fichier \"".$filename."\" non trouvé !", 'error');
         exit(header("Location: ./examples"));
     }
 }
@@ -133,6 +160,11 @@ elseif(!empty($_GET['tools']))
 
     //protect from people getting other files
     $file = $_GET['tools'];
+    if ($file === 'LoveExeMaker')
+    {
+        $dlm = new DownLoadsModel();
+        $file = $dlm->GetLoveExeMakerVersion();
+    }
     $filename=basename($file);
 
     //does the file exist?
@@ -180,7 +212,7 @@ elseif(!empty($_GET['tools']))
     }
     else
     {
-        Messages::setMsg("Fichier non trouvé !", 'error');
+        Messages::setMsg("Fichier \"".$filename."\" non trouvé !", 'error');
         exit(header("Location: ./tools"));
     }
 }

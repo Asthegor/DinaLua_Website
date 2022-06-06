@@ -4,7 +4,7 @@
     <table style="width:100%; text-align:left;">
         <tr>
             <th style="width:3%;">Id</th>
-            <th style="width:25%;">Titre</th>
+            <th style="width:40%;">Titre</th>
             <th style="width:15%;">Catégorie</th>
             <th style="width:10%;">Tuto préc.</th>
             <th style="width:10%;">Tuto suiv.</th>
@@ -19,7 +19,7 @@
             <table style="width:100%;">
                 <tr>
                     <td style="width:3%;"><?= $item['id']; ?></td>
-                    <td style="width:25%;"><?= urldecode($item['title']); ?></td>
+                    <td style="width:40%;"><?= urldecode($item['title']); ?></td>
                     <td style="width:15%;"><?= urldecode($item['Category']); ?></td>
                     <td style="width:10%;"><?= $item['id_Previous'] ? $item['id_Previous'] : ''; ?></td>
                     <td style="width:10%;"><?= $item['id_Next'] ? $item['id_Next'] : ''; ?></td>
@@ -37,4 +37,3 @@
 <?php
 include(__DIR__."/../tutorialcategory/index.php");
 ?>
-</div>

@@ -10,7 +10,7 @@ class TutorialsModel extends Model
                       t.id_Previous, t.id_Next, t.visible 
                       FROM tutorial AS t 
                       LEFT JOIN tutorialcategory AS tc ON t.id_Category = tc.id 
-                      ORDER BY t.visible, t.id");
+                      ORDER BY t.visible, tc.sortOrder, tc.id, t.id");
         $rows = $this->resultSet();
         $this->close();
         return $rows;
@@ -19,7 +19,7 @@ class TutorialsModel extends Model
     public function Add()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['title'] == '' || $post['content'] == '')
             {
@@ -59,7 +59,7 @@ class TutorialsModel extends Model
     public function Update()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['title'] == '' || $post['content'] == '')
             {
@@ -129,6 +129,7 @@ class TutorialsModel extends Model
             }
             $this->close();
             $this->returnToPage($this->returnPage);
+            return;
         }
         $get = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
         $this->query("SELECT id, title 
@@ -149,12 +150,11 @@ class TutorialsModel extends Model
     {
         $query = "SELECT id, title
                   FROM tutorial 
-                  WHERE visible = 1 ";
+                  WHERE 1 = 1 ";
         if($currentId <> '')
             $query .= " AND id <> :id ";
         if(isset($currentCateg) && $currentCateg <> '')
             $query .= " AND id_Category = :id_Category ";
-var_dump($query);            
         $this->query($query);
 
         if($currentId <> '')

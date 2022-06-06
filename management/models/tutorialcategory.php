@@ -5,9 +5,10 @@ class TutorialCategoryModel extends Model
     private $returnPage = "tutorials";
     public function Index()
     {
-        $this->query("SELECT id, name, description, sortOrder
-                      FROM tutorialcategory
-                      ORDER BY sortOrder");
+        $this->query("SELECT tc.id, tc.name, tc.description, tc.sortOrder, tc.id_Parent, tcp.name Parent_Category
+                      FROM tutorialcategory AS tc
+                      LEFT JOIN tutorialcategory AS tcp ON tc.id_Parent = tcp.id 
+                      ORDER BY id_Parent, sortOrder");
         $rows = $this->resultSet();
         $this->close();
         return $rows;
@@ -16,7 +17,7 @@ class TutorialCategoryModel extends Model
     public function Add()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['name'] == '')
             {
@@ -27,11 +28,12 @@ class TutorialCategoryModel extends Model
                 // Insert into MySQL
                 $this->startTransaction();
                 // Insertion du nom français
-                $this->query("INSERT INTO tutorialcategory (name, description, sortOrder)
-                              VALUES (:name, :description, :sortOrder)");
+                $this->query("INSERT INTO tutorialcategory (name, description, sortOrder, id_Parent)
+                              VALUES (:name, :description, :sortOrder, :id_Parent)");
                 $this->bind(':name', $post['name']);
                 $this->bind(':description', $post['content']);
                 $this->bind(':sortOrder', $post['sortOrder']);
+                $this->bind(':id_Parent', isset($post['id_Parent']) ? $post['id_Parent'] : 0);
                 $resp = $this->execute();
                 //Verify
                 if($resp)
@@ -52,7 +54,7 @@ class TutorialCategoryModel extends Model
     public function Update()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['name'] == '')
             {
@@ -65,11 +67,12 @@ class TutorialCategoryModel extends Model
                 //Insertion des données générales
                 $this->query("UPDATE tutorialcategory
                               SET name = :name, description = :description, 
-                              sortOrder = :sortOrder
+                              sortOrder = :sortOrder, id_Parent = :id_Parent
                               WHERE id = :id");
                 $this->bind(':name', $post['name']);
                 $this->bind(':description', $post['content']);
                 $this->bind(':sortOrder', $post['sortOrder']);
+                $this->bind(':id_Parent', isset($post['id_Parent']) ? $post['id_Parent'] : 0);
                 $this->bind(':id', $post['id']);
                 $resp = $this->execute();
                 //Verify
@@ -86,10 +89,11 @@ class TutorialCategoryModel extends Model
                     $this->close();
                     Messages::setMsg('Error(s) during update : [resp='.$resp.']', 'error');
                 }
+                return;
             }
         }
         $get = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
-        $this->query("SELECT id, name, description, sortOrder 
+        $this->query("SELECT id, name, description, sortOrder, id_Parent 
                       FROM tutorialcategory WHERE id = :id");
         $this->bind(':id', $get['id']);
         $rows = $this->single();
@@ -116,6 +120,7 @@ class TutorialCategoryModel extends Model
             }
             $this->close();
             $this->returnToPage($this->returnPage);
+            return;
         }
         $get = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
         $this->query("SELECT id, name
@@ -128,18 +133,18 @@ class TutorialCategoryModel extends Model
         {
             Messages::setMsg('Record "'.$get['id'].'" not found', 'error');
             $this->returnToPage($this->returnPage);
+            return;
         }
         return $rows;
     }
     
     public function getlist($currentId)
     {
-        $query = "SELECT id, name, description, sortOrder 
-                  FROM tutorialcategory 
-                  ORDER BY sortOrder, name";
+        $query = "SELECT id, name, description, sortOrder, id_Parent 
+                  FROM tutorialcategory ";
         if($currentId <> '')
-            $query .= " AND id <> :id";
-        var_dump($query);
+            $query .= " WHERE id <> :id ";
+        $query .= "ORDER BY sortOrder, name";
         $this->query($query);
         if($currentId <> '')
             $this->bind(':id', $currentId);

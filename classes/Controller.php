@@ -20,16 +20,20 @@ abstract class Controller
     {
         if (is_array($viewModel))
             extract($viewModel);
+        
         $view = 'views/'.strtolower(get_class($this)).'/'.$this->action.'.php';
         require('views/main.php');
     }
 
-    protected function checkLogin()
+    public function IsLoggedIn()
     {
-        if (!isset($_SESSION['is_logged_in']))
+        if (isset($_SESSION['Dina_data']) && isset($_SESSION['Dina_data']['uniqueid']))
         {
-            header('Location: '.ROOT_MNGT);
+            if ($_SESSION['Dina_data']['confirmed'] == "1")
+                return true;
         }
+        return false;
     }
+    
 }
 ?>

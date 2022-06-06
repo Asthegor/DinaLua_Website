@@ -29,7 +29,23 @@
     </div>
     <div class="form-group">
         <label>Ordre de tri</label>
-        <input type="text" name="sortOrder" value="<?= $viewModel['sortOrder']; ?>" required />
+        <input type="text" name="sortOrder" value="<?= isset($viewModel['sortOrder']) ? $viewModel['sortOrder'] : ''; ?>" required />
+    </div>
+    <div class="form-group">
+        <label>Catégorie parent</label>
+        <select name="id_Parent">
+            <option value="0"></option>
+            <?php
+            $fm = new TutorialCategoryModel();
+            $fmlist = $fm->getlist(isset($viewModel['id']) ? $viewModel['id'] : 0);
+            foreach ($fmlist as $item)
+            {
+                ?>
+                <option value="<?= $item['id']; ?>" <?= isset($viewModel['id_Parent']) ? ($viewModel['id_Parent'] == $item['id'] ? 'selected' : '') : ''; ?>><?= urldecode($item['name']); ?></option>
+                <?php
+            }
+            ?>
+        </select>
     </div>
     <input class="btn btn-primary" name="submit" type="submit" value="Submit" />
     <a class="btn btn-warning" href="<?= ROOT_MNGT; ?>tutorials">Cancel</a>

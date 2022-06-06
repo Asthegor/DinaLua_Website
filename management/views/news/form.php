@@ -47,12 +47,17 @@
         <input type="checkbox" name="new_tutorial" value="1" <?= (isset($viewModel['new_tutorial']) && $viewModel['new_tutorial']) ? 'checked' : ''; ?> />
     </div>
     <div class="form-group">
+        <label>Nouvel outil</label>
+        <input type='hidden' name="new_tool" value="0" />
+        <input type="checkbox" name="new_tool" value="1" <?= (isset($viewModel['new_tool']) && $viewModel['new_tool']) ? 'checked' : ''; ?> />
+    </div>
+    <div class="form-group">
         <label>Visible</label>
         <input type='hidden' name="visible" value="0" />
         <input type="checkbox" name="visible" value="1" <?= (isset($viewModel['visible']) && $viewModel['visible']) ? 'checked' : ''; ?> />
     </div>
     <input class="btn btn-primary" name="submit" type="submit" value="Submit" />
-    <a class="btn btn-warning" href="<?= ROOT_MNGT; ?>home">Cancel</a>
+    <a class="btn btn-warning" href="<?= ROOT_MNGT; ?>news">Cancel</a>
     <?php if (isset($viewModel['id']))
     {
         ?>

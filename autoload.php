@@ -2,7 +2,7 @@
 
 function LoadClasses($class)
 {
-    $fullname = 'classes/' . $class . '.php';
+    $fullname = __DIR__.'/classes/' . $class . '.php';
     if (!file_exists($fullname))
     {
         return false;
@@ -12,7 +12,7 @@ function LoadClasses($class)
 }
 function LoadControllers($class)
 {
-    $fullname = 'controllers/' . strtolower($class) . '.php';
+    $fullname = __DIR__.'/controllers/' . strtolower($class) . '.php';
     if (!file_exists($fullname))
     {
         return false;
@@ -22,7 +22,7 @@ function LoadControllers($class)
 }
 function LoadModels($class)
 {
-    $fullname = 'models/' . strtolower(str_replace("Model", "", $class)) . '.php';
+    $fullname = __DIR__.'/models/' . strtolower(str_replace("Model", "", $class)) . '.php';
     if (!file_exists($fullname))
     {
         return false;

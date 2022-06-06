@@ -3,13 +3,15 @@
 class ExamplesModel extends Model
 {
     private $returnPage = "examples";
+    private $targetDir = "files/examples/";
+
     public function Index()
     {
         $this->query("SELECT e.id, e.title, e.description, e.visible, e.file, ".
                      "CASE WHEN ec.name IS NULL THEN '' ELSE ec.name END Category ".
                      "FROM example AS e ".
                      "LEFT JOIN examplecategory AS ec ON e.id_Category = ec.id ".
-                     "ORDER BY e.visible, ec.name");
+                     "ORDER BY e.visible DESC, ec.name");
         $rows = $this->resultSet();
         $this->close();
         return $rows;
@@ -18,7 +20,7 @@ class ExamplesModel extends Model
     public function Add()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['title'] == '')
             {
@@ -28,9 +30,8 @@ class ExamplesModel extends Model
             {
                 if (isset($_FILES["file"]))
                 {
-                    $target_dir = ROOT_DIR. "files/examples/";
                     $file = basename($_FILES["file"]["name"]);
-                    $target_file = $target_dir . $file;
+                    $target_file = ROOT_DIR. $this->targetDir . $file;
                     $fileExtension = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
                     if($fileExtension != "" && $fileExtension !== "zip")
                     {
@@ -43,7 +44,6 @@ class ExamplesModel extends Model
 
                 // Insert into MySQL
                 $this->startTransaction();
-                // Insertion du nom français
                 $this->query("INSERT INTO example (id_Category, title, description, visible, file) ".
                              "VALUES (:id_Category, :title, :description, :visible, :file)");
                 $this->bind(':id_Category', $post['id_Category']);
@@ -52,8 +52,8 @@ class ExamplesModel extends Model
                 $this->bind(':visible', isset($post['visible']) ? $post['visible'] : 0, PDO::PARAM_INT);
                 $this->bind(':file', $file);
                 $resp = $this->execute();
-                //Verify
-                if (isset($_FILES["file"]))
+                //Uplod file
+                if ($file != "")
                     $upload = move_uploaded_file($_FILES["file"]["tmp_name"], $target_file);
                 else
                     $upload = true;
@@ -80,7 +80,7 @@ class ExamplesModel extends Model
     public function Update()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['title'] == '')
             {
@@ -90,9 +90,8 @@ class ExamplesModel extends Model
             {
                 if (isset($_FILES["file"]))
                 {
-                    $target_dir = "files/examples/";
                     $file = basename($_FILES["file"]["name"]);
-                    $target_file = ROOT_DIR.$target_dir . $file;
+                    $target_file = ROOT_DIR . $this->targetDir . $file;
                     $fileExtension = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
                     if($file !='' && $fileExtension !== "zip")
                     {
@@ -106,13 +105,17 @@ class ExamplesModel extends Model
                 // Insert into MySQL
                 $this->startTransaction();
                 //Insertion des données générales
-                $this->query("UPDATE example ".
-                             "SET title = :title, description = :description, file = :file, ".
-                             "id_Category = :id_Category, visible = :visible ".
-                             "WHERE id = :id");
+                $query = "UPDATE example ".
+                             "SET title = :title, description = :description, ".
+                             "id_Category = :id_Category, visible = :visible ";
+                if ($file != "")
+                    $query .= ", file = :file ";
+                $query .= "WHERE id = :id";
+                $this->query($query);
                 $this->bind(':title', $post['title']);
                 $this->bind(':description', $post['content']);
-                $this->bind(':file', $file);
+                if ($file != "")
+                    $this->bind(':file', $file);
                 $this->bind(':id_Category', $post['id_Category']);
                 $this->bind(':visible', isset($post['visible']) ? $post['visible'] : 0);
                 $this->bind(':id', $post['id']);
@@ -141,7 +144,7 @@ class ExamplesModel extends Model
                 }
             }
         }
-        $get = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+        $get = filter_input_array(INPUT_GET, FILTER_SANITIZE_ENCODED);
         $this->query("SELECT id, id_Category, title, description, file, visible ".
                      "FROM example ".
                      "WHERE id = :id");
@@ -158,7 +161,7 @@ class ExamplesModel extends Model
 
     public function Delete()
     {
-        $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
         if (isset($post['todelete']))
         {
             $this->query('DELETE FROM example WHERE id = :id');
@@ -171,7 +174,7 @@ class ExamplesModel extends Model
             $this->close();
             $this->returnToPage($this->returnPage);
         }
-        $get = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+        $get = filter_input_array(INPUT_GET, FILTER_SANITIZE_ENCODED);
         $this->query("SELECT id, title, file ".
                      "FROM example WHERE id = :id ".
                      "ORDER BY visible, id");
@@ -207,5 +210,20 @@ class ExamplesModel extends Model
         $this->close();
         return $rows;
     }
+
+    public function NbDownloads($FileName)
+    {
+        $File = basename($FileName);
+        if(!file_exists(ROOT_DIR. $this->targetDir.$File.'_counter.txt'))
+        {
+            $fp = fopen(ROOT_DIR. $this->targetDir.$File.'_counter.txt', "w+");
+            fclose($fp);
+        }
+        $countFile = fopen(ROOT_DIR. $this->targetDir . $File."_counter.txt", "r");
+        $nbdownloads = fgets($countFile);
+        fclose($countFile);
+        return $nbdownloads;
+    }
+    
 }
 ?>

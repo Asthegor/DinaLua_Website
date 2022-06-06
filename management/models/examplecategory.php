@@ -16,7 +16,7 @@ class ExampleCategoryModel extends Model
     public function Add()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['name'] == '')
             {
@@ -52,7 +52,7 @@ class ExampleCategoryModel extends Model
     public function Update()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED);
-        if ($post['submit'])
+        if (isset($post['submit']))
         {
             if ($post['name'] == '')
             {
@@ -138,7 +138,6 @@ class ExampleCategoryModel extends Model
                   ORDER BY name";
         if($currentId <> '')
             $query .= " AND id <> :id";
-        var_dump($query);
         $this->query($query);
         if($currentId <> '')
             $this->bind(':id', $currentId);
